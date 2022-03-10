@@ -12988,4 +12988,4 @@ const allowedGuesses = [
     'zymic'
 ]
 
-export const allWords = [...answers, ...allowedGuesses]
+export const allWords = [...answers, ...allowedGuesses].sort()

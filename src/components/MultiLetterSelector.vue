@@ -2,7 +2,7 @@
   <div
     v-if="props.show"
     class="fixed w-full h-full z-10 backdrop-blur-md flex items-center justify-center"
-    @click.self="emit('closeOneLetterSelector')"
+    @click.self="emit('closeMultiLetterSelector')"
   >
     <div
       class="grid grid-cols-4 grid-flow-row gap-5 p-4 shadow-lg rounded-3xl bg-white dark:bg-gray-800"
@@ -13,9 +13,11 @@
         class="w-12 aspect-square rounded-full mx-auto border-2 border-gray-500 cursor-pointer sm:hover:bg-gray-500 sm:hover:text-gray-100"
         :class="{
           'bg-gray-500 border-gray-500 text-gray-100':
-            item === props.greenLetters[currentBtn - 1]
+            (props.currentBtn === 6
+              ? props.information.yellowLetters
+              : props.information.grayLetters).has(item)
         }"
-        @click.self="emit('selectOneGreenLetter', item)"
+        @click.self="emit('toggleLetterInLetterSet', item)"
       >
         {{ item }}
       </button>
@@ -31,8 +33,8 @@
       type: Boolean,
       required: true
     },
-    greenLetters: {
-      type: Array,
+    information: {
+      type: Object,
       required: true
     },
     currentBtn: {
@@ -41,10 +43,12 @@
     }
   })
 
-  const emit = defineEmits(['closeOneLetterSelector', 'selectOneGreenLetter'])
+  const emit = defineEmits([
+    'closeMultiLetterSelector',
+    'toggleLetterInLetterSet'
+  ])
 
   const alphabetArray = [
-    '?',
     'A',
     'B',
     'C',
