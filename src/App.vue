@@ -37,7 +37,7 @@
     })
     if (information.grayLetters.size) {
       result.push(
-        new RegExp(`[^${Array.from(information.grayLetters).join('')}]`)
+        new RegExp(`[^${Array.from(information.grayLetters).join('')}]{5}`)
       )
     }
     console.log(result)
