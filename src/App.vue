@@ -79,13 +79,16 @@
       ? information[colorLetters].delete(selectedLetter)
       : information[colorLetters].add(selectedLetter)
   }
+  const handleReset = () => {
+    information.greenLetters = ['?', '?', '?', '?', '?']
+    information.yellowLetters = new Set()
+    information.grayLetters = new Set()
+  }
 </script>
 
 <template>
-  <div class="max-w-3xl w-full">
-    <div
-      class="flex justify-center items-center h-16 shadow-lg rounded-xl mt-2 mx-4 mb-6"
-    >
+  <div class="max-w-3xl w-full rounded-3xl shadow-lg">
+    <div class="flex justify-center items-center m-4">
       <div class="flex-1"></div>
       <span class="text-3xl font-bold">MOORDLE · HELPER</span>
       <div class="flex-1"></div>
@@ -101,16 +104,16 @@
         />
       </div>
     </div>
-    <div class="flex justify-between mx-8 items-center">
+    <div class="flex justify-between mx-8 items-center mt-2">
       <LetterSelectBtn
         color="yellow"
         :letter="information.yellowLetters.size === 0 ? '?' : '...'"
         @showMultiLetterSelector="handleShowMultiLetterSelector(e, 6)"
       />
       <div>
-        <div class="stat text-center">
-          <div class="stat-title">Total Result</div>
-          <div class="stat-value">{{resultArr.length}}</div>
+        <div class="stat text-center p-0">
+          <div class="stat-title text-sm">Total Result</div>
+          <div class="stat-value text-2xl">{{ resultArr.length }}</div>
         </div>
       </div>
       <LetterSelectBtn
@@ -119,11 +122,30 @@
         @showMultiLetterSelector="handleShowMultiLetterSelector(e, 7)"
       />
     </div>
+    <div class="mx-8 mt-2 mb-4 flex grid grid-cols-1 grid-rows-1 gap-4">
+      <button
+        class="shadow-lg rounded-lg p-2"
+        @click="handleReset"
+      >
+        RESET
+      </button>
+      <!-- <button
+        v-if="false"
+        class="shadow-lg rounded-lg p-2 text-center"
+      >
+        BACK TO TOP
+      </button> -->
+    </div>
   </div>
-  <div class="divider font-bold">RESULT</div>
+  <!-- <div class="divider font-bold">RESULT</div> -->
   <div class="overflow-auto h-full">
     <ul class="grid grid-cols-3 grid-flow-row gap-y-2 text-center my-4">
-      <li v-for="(item, index) in (resultArr.length <= 99 ? resultArr : resultArr.slice(0, 99))" :key="index">
+      <li
+        v-for="(item, index) in resultArr.length <= 99
+          ? resultArr
+          : resultArr.slice(0, 99)"
+        :key="index"
+      >
         <span>{{ item }}</span>
       </li>
     </ul>
