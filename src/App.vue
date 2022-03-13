@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, reactive, ref } from 'vue'
+  import { computed, onMounted, reactive, ref } from 'vue'
   import { allWords } from './wordOfTheDay'
   import LetterSelectBtn from './components/LetterSelectBtn.vue'
   import OneLetterSelector from './components/OneLetterSelector.vue'
@@ -13,16 +13,20 @@
     yellowLetters: new Set(),
     grayLetters: new Set()
   })
+  const arrScope = ref(99)
 
-  console.log(
-    allWords
-      .filter((word) => /\w{2}f\w{2}/.test(word))
-      .filter((word) => /\w{2}f\w{2}/.test(word))
-      .filter((word) => /[^juicebrvhntys]{5}/.test(word))
-      .filter((word) => /\w*o\w*/.test(word))
-      .filter((word) => /\w*l\w*/.test(word))
-      .filter((word) => /\w*a\w*/.test(word))
-  )
+  const scrollContent = ref(null)
+  const list = ref(null)
+
+  // console.log(
+  //   allWords
+  //     .filter((word) => /\w{2}f\w{2}/.test(word))
+  //     .filter((word) => /\w{2}f\w{2}/.test(word))
+  //     .filter((word) => /[^juicebrvhntys]{5}/.test(word))
+  //     .filter((word) => /\w*o\w*/.test(word))
+  //     .filter((word) => /\w*l\w*/.test(word))
+  //     .filter((word) => /\w*a\w*/.test(word))
+  // )
 
   const regArr = computed(() => {
     const result = []
@@ -40,7 +44,6 @@
         new RegExp(`[^${Array.from(information.grayLetters).join('')}]{5}`)
       )
     }
-    console.log(result)
     return result
   })
 
@@ -49,6 +52,11 @@
     for (let i = 0; i < regArr.value.length; i++) {
       result = result.filter((word) => regArr.value[i].test(word.toUpperCase()))
     }
+    setTimeout(() => {
+      list.value.style.paddingTop = ''
+      scrollContent.value.scrollTop = 0
+      arrScope.value = 0
+    }, 1)
     return result
   })
 
@@ -60,13 +68,10 @@
   const handleShowOneLetterSelector = (e, i) => {
     currentBtn.value = i
     showOneLetterSelector.value = true
-    console.log(showOneLetterSelector.value)
   }
   const handleShowMultiLetterSelector = (e, i) => {
     currentBtn.value = i
-    console.log(i)
     showMultiLetterSelector.value = true
-    console.log(showOneLetterSelector.value)
   }
   const handleSelectOneGreenLetter = (selectedLetter) => {
     information.greenLetters[currentBtn.value - 1] = selectedLetter
@@ -83,6 +88,30 @@
     information.greenLetters = ['?', '?', '?', '?', '?']
     information.yellowLetters = new Set()
     information.grayLetters = new Set()
+  }
+  const handleScroll = () => {
+    const getPaddingTop = (node) => {
+      return node.style.paddingTop === '' ? 0 : parseInt(node.style.paddingTop)
+    }
+    const [scrollTop, scrollHeight, offsetHeight] = [
+      scrollContent.value.scrollTop,
+      scrollContent.value.scrollHeight,
+      scrollContent.value.offsetHeight
+    ]
+    const remToPx = parseInt(
+      window.getComputedStyle(document.documentElement)['fontSize']
+    )
+    const rowShowNum = Math.ceil(offsetHeight / (remToPx * 2))
+    const paddingTop = getPaddingTop(list.value)
+    // scrollTop + offsetHeight = scrollHeight
+    if (scrollTop + offsetHeight >= scrollHeight) {
+      arrScope.value += (33 - rowShowNum) * 3
+      list.value.style.paddingTop = paddingTop + (33 - rowShowNum) * 2 + 'rem'
+    }
+    if (scrollTop > 0 && scrollTop <= paddingTop * remToPx) {
+      arrScope.value -= (33 - rowShowNum) * 3
+      list.value.style.paddingTop = paddingTop - (33 - rowShowNum) * 2 + 'rem'
+    }
   }
 </script>
 
@@ -123,10 +152,7 @@
       />
     </div>
     <div class="mx-8 mt-2 mb-4 flex grid grid-cols-1 grid-rows-1 gap-4">
-      <button
-        class="shadow-lg rounded-lg p-2"
-        @click="handleReset"
-      >
+      <button class="shadow-lg rounded-lg p-2" @click="handleReset">
         RESET
       </button>
       <!-- <button
@@ -137,14 +163,14 @@
       </button> -->
     </div>
   </div>
-  <!-- <div class="divider font-bold">RESULT</div> -->
-  <div class="overflow-auto h-full">
-    <ul class="grid grid-cols-3 grid-flow-row gap-y-2 text-center my-4">
+  <div ref="scrollContent" class="overflow-auto h-full" @scroll="handleScroll">
+    <ul ref="list" class="grid grid-cols-3 grid-flow-row text-center my-4">
       <li
         v-for="(item, index) in resultArr.length <= 99
           ? resultArr
-          : resultArr.slice(0, 99)"
+          : resultArr.slice(arrScope, arrScope + 99)"
         :key="index"
+        class="h-8"
       >
         <span>{{ item }}</span>
       </li>
