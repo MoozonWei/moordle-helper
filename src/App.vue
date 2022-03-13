@@ -151,7 +151,7 @@
         @showMultiLetterSelector="handleShowMultiLetterSelector(e, 7)"
       />
     </div>
-    <div class="mx-8 mt-2 mb-4 flex grid grid-cols-1 grid-rows-1 gap-4">
+    <div class="mx-8 mt-2 mb-4 grid grid-cols-1 grid-rows-1 gap-4">
       <button class="shadow-lg rounded-lg p-2" @click="handleReset">
         RESET
       </button>
