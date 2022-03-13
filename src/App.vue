@@ -76,6 +76,7 @@
   const handleSelectOneGreenLetter = (selectedLetter) => {
     information.greenLetters[currentBtn.value - 1] = selectedLetter
     information.greenLetters = new Array(...information.greenLetters)
+    showOneLetterSelector.value = false
   }
   const handleToggleLetterInLetterSet = (selectedLetter) => {
     const colorLetters =
@@ -104,13 +105,13 @@
     const rowShowNum = Math.ceil(offsetHeight / (remToPx * 2))
     const paddingTop = getPaddingTop(list.value)
     // scrollTop + offsetHeight = scrollHeight
-    if (scrollTop + offsetHeight >= scrollHeight) {
-      arrScope.value += (33 - rowShowNum) * 3
-      list.value.style.paddingTop = paddingTop + (33 - rowShowNum) * 2 + 'rem'
+    if (scrollTop + offsetHeight >= scrollHeight && (arrScope.value + 99) <= resultArr.value.length) {
+      arrScope.value += (32 - rowShowNum) * 3
+      list.value.style.paddingTop = paddingTop + (32 - rowShowNum) * 2 + 'rem'
     }
     if (scrollTop > 0 && scrollTop <= paddingTop * remToPx) {
-      arrScope.value -= (33 - rowShowNum) * 3
-      list.value.style.paddingTop = paddingTop - (33 - rowShowNum) * 2 + 'rem'
+      arrScope.value -= (32 - rowShowNum) * 3
+      list.value.style.paddingTop = paddingTop - (32 - rowShowNum) * 2 + 'rem'
     }
   }
 </script>
